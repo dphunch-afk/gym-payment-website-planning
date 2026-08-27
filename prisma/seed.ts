@@ -174,7 +174,51 @@ async function main() {
     });
   }
 
-  console.log(`Seeded Phase 3 demo data for ${owner.email} and ${member.email}`);
+  let workout = await prisma.workoutPlan.findFirst({ where: { memberId: profile.id, title: 'Starter Strength Plan' } });
+  if (!workout) {
+    workout = await prisma.workoutPlan.create({
+      data: {
+        memberId: profile.id,
+        title: 'Starter Strength Plan',
+        notes: 'Three-day beginner strength routine.',
+        startsOn: now,
+        isActive: true,
+        createdById: owner.id
+      }
+    });
+  }
+
+  const exerciseCount = await prisma.workoutExercise.count({ where: { workoutPlanId: workout.id } });
+  if (exerciseCount === 0) {
+    await prisma.workoutExercise.createMany({
+      data: [
+        { workoutPlanId: workout.id, dayLabel: 'Day 1', exerciseName: 'Squat', sets: 3, reps: '10', sortOrder: 1 },
+        { workoutPlanId: workout.id, dayLabel: 'Day 1', exerciseName: 'Push-up', sets: 3, reps: '8-12', sortOrder: 2 },
+        { workoutPlanId: workout.id, dayLabel: 'Day 2', exerciseName: 'Lat Pulldown', sets: 3, reps: '10-12', sortOrder: 1 },
+        { workoutPlanId: workout.id, dayLabel: 'Day 3', exerciseName: 'Treadmill', durationMinutes: 20, notes: 'Easy pace', sortOrder: 1 }
+      ]
+    });
+  }
+
+  const demoProgress = await prisma.progressEntry.findFirst({ where: { memberId: profile.id, note: 'Demo baseline' } });
+  if (!demoProgress) {
+    await prisma.progressEntry.create({
+      data: {
+        memberId: profile.id,
+        recordedAt: now,
+        weightGrams: 72000,
+        chestMm: 980,
+        waistMm: 860,
+        hipMm: 960,
+        armMm: 330,
+        thighMm: 560,
+        note: 'Demo baseline',
+        recordedById: owner.id
+      }
+    });
+  }
+
+  console.log(`Seeded Phase 4 demo data for ${owner.email} and ${member.email}`);
 }
 
 main()
