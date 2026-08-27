@@ -8,17 +8,19 @@ datasource db {
 }
 
 model User {
-  id              String         @id @default(cuid())
-  email           String         @unique
-  name            String
-  passwordHash    String
-  role            String         @default("MEMBER")
-  sessions        Session[]
-  member          MemberProfile?
-  paymentsCreated Payment[]      @relation("PaymentCreator")
-  expensesCreated Expense[]      @relation("ExpenseCreator")
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id                   String         @id @default(cuid())
+  email                String         @unique
+  name                 String
+  passwordHash         String
+  role                 String         @default("MEMBER")
+  sessions             Session[]
+  member               MemberProfile?
+  paymentsCreated      Payment[]      @relation("PaymentCreator")
+  expensesCreated      Expense[]      @relation("ExpenseCreator")
+  announcementsCreated Announcement[] @relation("AnnouncementCreator")
+  attendanceRecorded   Attendance[]   @relation("AttendanceRecorder")
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
 }
 
 model Session {
@@ -48,6 +50,7 @@ model MemberProfile {
   memberships      Membership[]
   charges          Charge[]
   payments         Payment[]
+  attendance       Attendance[]
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
@@ -129,4 +132,33 @@ model Expense {
 
   @@index([expenseDate])
   @@index([category])
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  body        String
+  isActive    Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdById String
+  createdBy   User     @relation("AnnouncementCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, publishedAt])
+}
+
+model Attendance {
+  id           String        @id @default(cuid())
+  memberId     String
+  member       MemberProfile @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  attendedAt   DateTime
+  note         String?
+  recordedById String
+  recordedBy   User          @relation("AttendanceRecorder", fields: [recordedById], references: [id], onDelete: Restrict)
+  createdAt    DateTime      @default(now())
+
+  @@unique([memberId, attendedAt])
+  @@index([memberId, attendedAt])
+  @@index([attendedAt])
 }
