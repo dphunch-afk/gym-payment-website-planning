@@ -1,0 +1,20 @@
+{
+  "name": "Gym Owner Manager",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Gym Owner Manager",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "cp -n .env.example .env && npm install && npm run setup",
+  "postStartCommand": "nohup npm run dev -- --hostname 0.0.0.0 > /tmp/gym-owner-manager.log 2>&1 &",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Prisma.prisma"
+      ]
+    }
+  }
+}
