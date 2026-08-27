@@ -21,6 +21,9 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
           <Link href="/owner/plans">Plans</Link>
           <Link href="/owner/payments">Payments</Link>
           <Link href="/owner/expenses">Expenses</Link>
+          <Link href="/owner/attendance">Attendance</Link>
+          <Link href="/owner/workouts">Workouts</Link>
+          <Link href="/owner/progress">Progress</Link>
           <Link href="/owner/announcements">Announcements</Link>
         </nav>
       </header>
