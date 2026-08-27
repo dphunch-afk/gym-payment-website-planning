@@ -1,4 +1,5 @@
 node_modules/
+.next/
 dist/
 build/
 .env
@@ -7,3 +8,5 @@ build/
 .DS_Store
 coverage/
 *.log
+prisma/*.db
+prisma/*.db-journal
