@@ -1,57 +1,74 @@
-# Gym Payment Website Planning
+# Gym Owner Manager
 
-A separate project for a gym management system designed for both gym owners/admins and gym members.
+A separate gym management product for owners/admins and gym members. The first production target is a mobile-first Progressive Web App (PWA) that opens directly in a normal browser and can be installed on Android.
+
+## Current implementation
+
+Phase 1 is under development on the `phase-1-foundation` branch.
+
+Implemented in Phase 1:
+- Next.js + TypeScript application foundation
+- Prisma relational data layer
+- Local SQLite development database (production will use managed PostgreSQL)
+- Server-side login sessions stored in the database
+- HTTP-only session cookie
+- Owner/Admin and Member role protection
+- Protected Owner dashboard
+- Protected Member dashboard that reads only the signed-in member profile
+- PWA manifest, service worker, app icon and offline fallback
+- Demo seed accounts for testing
+
+## Run locally
+
+1. Install Node.js 20+.
+2. Copy `.env.example` to `.env`.
+3. Run `npm install`.
+4. Run `npm run setup` to generate Prisma, create the local database and seed demo users.
+5. Run `npm run dev`.
+6. Open `http://localhost:3000`.
+
+## Demo accounts
+
+Owner:
+- Email: `owner@gym.local`
+- Password: `Owner@123`
+
+Member:
+- Email: `member@gym.local`
+- Password: `Member@123`
+
+These credentials are demo-only and must not be used in production.
 
 ## Product direction
 
-The system should be mobile-first, browser-friendly, and installable as a PWA on Android. The public web app must open directly in a normal browser and must not depend on an Expo launcher page.
-
-## Owner/Admin side
-
-- Secure owner/admin login
-- Dashboard with active members, monthly collections, outstanding dues, expenses, and net cash
-- Member registration and profile management
-- Membership plans and renewals
-- Fee collection and payment history
-- Automatic due calculation and overdue tracking
-- Downloadable/printable receipts
-- Expense tracking by category
-- Income, expense, due, and profit/loss reports
-- Attendance management
-- Trainer/staff management
-- Gym announcements
-- Workout-plan assignment
-- Member progress tracking
-- Search and filtering
+### Owner/Admin
+- Members and membership plans
+- Fee collection, partial payments, dues and overdue tracking
+- Receipts and payment history
+- Expenses and reports
+- Attendance
+- Trainers/staff
+- Announcements
+- Workout plans and member progress
 - Backup/export
 
-## Member side
-
-Members must only be able to see their own information.
-
-- Secure member login
-- Membership status and plan
-- Joining date, expiry date, next due date, and outstanding amount
+### Member
+Members must only see their own information:
+- Membership status, plan and dates
+- Outstanding dues
 - Payment history and receipts
 - Attendance history
-- Gym announcements
+- Announcements
 - Assigned workout plan
-- Weight and body-measurement progress tracking
-- Profile
-- Renewal information and fee reminders
-
-## Core principle
-
-One product, two roles:
-
-1. **Owner/Admin** — manages gym operations and all permitted business data.
-2. **Member** — sees only their own membership, payment, attendance, workout, and progress information.
+- Weight/body-measurement progress
+- Profile and renewal information
 
 ## Delivery strategy
 
-1. Build the browser/PWA version first.
-2. Test all owner/member workflows with persistent data.
-3. Make the PWA installable on Android.
-4. Later package or wrap it as a native Android APK/AAB if required.
+1. Finish and verify the browser/PWA version.
+2. Move the production database to PostgreSQL and deploy behind HTTPS.
+3. Test all owner/member workflows and financial correctness.
+4. Make the PWA installable on Android.
+5. Later package as APK/AAB if required.
 
-See the `docs/` directory for the detailed product plan, data model, security model, UX flows, and roadmap.
+See `docs/` for the product plan, data model, security model, UX flows, test plan and roadmap.
