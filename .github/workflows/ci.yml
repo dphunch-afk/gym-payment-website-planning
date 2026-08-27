@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, phase-1-foundation, phase-2-financial-mvp, phase-3-member-portal]
+    branches: [main, phase-1-foundation, phase-2-financial-mvp, phase-3-member-portal, phase-4-fitness-engagement]
   pull_request:
     branches: [main]
 
@@ -21,4 +21,5 @@ jobs:
       - run: npm run setup
       - run: npm run test:phase2
       - run: npm run test:phase3
+      - run: npm run test:phase4
       - run: npm run build
