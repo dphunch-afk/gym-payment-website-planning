@@ -25,6 +25,7 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
           <Link href="/owner/workouts">Workouts</Link>
           <Link href="/owner/progress">Progress</Link>
           <Link href="/owner/announcements">Announcements</Link>
+          <Link href="/owner/reports">Reports</Link>
         </nav>
       </header>
       {children}
