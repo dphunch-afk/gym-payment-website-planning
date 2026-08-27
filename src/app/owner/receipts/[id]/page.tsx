@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PrintButton } from '@/components/PrintButton';
+import { requireOwner } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { formatDate, getMemberBalance, moneyFromPaise } from '@/lib/finance';
 
 export default async function ReceiptPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireOwner();
   const { id } = await params;
   const payment = await db.payment.findUnique({
     where: { id },
