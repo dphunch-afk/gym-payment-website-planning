@@ -1,29 +1,53 @@
 # Gym Owner Manager
 
-A separate gym management product for owners/admins and gym members. The first production target is a mobile-first Progressive Web App (PWA) that opens directly in a normal browser and can be installed on Android.
+A mobile-first gym management PWA for owners/admins and gym members. The browser/PWA application is the production source of truth; Android packaging follows after the HTTPS deployment is verified.
 
 ## Current implementation
 
-Phase 1 is under development on the `phase-1-foundation` branch.
+Phases 1–4 are merged into `main`. Phase 5 production readiness is being completed on `phase-5-production-readiness`.
 
-Implemented in Phase 1:
-- Next.js + TypeScript application foundation
-- Prisma relational data layer
-- Local SQLite development database (production will use managed PostgreSQL)
-- Server-side login sessions stored in the database
-- HTTP-only session cookie
-- Owner/Admin and Member role protection
-- Protected Owner dashboard
-- Protected Member dashboard that reads only the signed-in member profile
-- PWA manifest, service worker, app icon and offline fallback
-- Demo seed accounts for testing
+### Owner/Admin
+- Secure server-side login and role protection
+- Members and membership plans
+- Renewals with immutable historical fee snapshots
+- Fee collection and partial payments
+- Ledger-backed dues and overdue tracking
+- Unique printable receipts and payment history
+- Expenses and financial dashboard
+- Attendance recording/history
+- Gym announcements
+- Member-specific workout plans and exercises
+- Weight/body-measurement progress tracking
+- Reports: collections, dues, expenses, income-vs-expense and expiring memberships
+- CSV exports and Owner/Admin-only JSON backup
+
+### Member
+Members see only their own records:
+- Membership status, plan and dates
+- Ledger-backed outstanding and overdue amounts
+- Payment history and member-scoped receipts
+- Attendance history
+- Gym announcements
+- Assigned workout plan
+- Private weight/body-measurement progress
+- Profile phone update
+
+### PWA / production readiness
+- PWA manifest and service worker
+- Dedicated install icons and offline fallback
+- Private authenticated pages are not application-cached
+- Local SQLite development database
+- Separate managed-PostgreSQL production build path
+- Vercel deployment configuration
+- Android TWA/APK/AAB packaging strategy documented
+- CI runs production dependency audit plus Phase 2–5 regression checks
 
 ## Run locally
 
 1. Install Node.js 20+.
 2. Copy `.env.example` to `.env`.
 3. Run `npm install`.
-4. Run `npm run setup` to generate Prisma, create the local database and seed demo users.
+4. Run `npm run setup` to generate Prisma, create the local SQLite database and seed demo users.
 5. Run `npm run dev`.
 6. Open `http://localhost:3000`.
 
@@ -37,38 +61,13 @@ Member:
 - Email: `member@gym.local`
 - Password: `Member@123`
 
-These credentials are demo-only and must not be used in production.
+These credentials are local-demo-only and must never be used in production.
 
-## Product direction
+## Production deployment
 
-### Owner/Admin
-- Members and membership plans
-- Fee collection, partial payments, dues and overdue tracking
-- Receipts and payment history
-- Expenses and reports
-- Attendance
-- Trainers/staff
-- Announcements
-- Workout plans and member progress
-- Backup/export
+Production uses a managed PostgreSQL `DATABASE_URL` and the repository's Vercel production build configuration. The production build does not seed the demo users.
 
-### Member
-Members must only see their own information:
-- Membership status, plan and dates
-- Outstanding dues
-- Payment history and receipts
-- Attendance history
-- Announcements
-- Assigned workout plan
-- Weight/body-measurement progress
-- Profile and renewal information
-
-## Delivery strategy
-
-1. Finish and verify the browser/PWA version.
-2. Move the production database to PostgreSQL and deploy behind HTTPS.
-3. Test all owner/member workflows and financial correctness.
-4. Make the PWA installable on Android.
-5. Later package as APK/AAB if required.
-
-See `docs/` for the product plan, data model, security model, UX flows, test plan and roadmap.
+See:
+- `docs/DEPLOYMENT.md` for production deployment and verification
+- `docs/ANDROID_PACKAGING.md` for APK/AAB strategy
+- `docs/` for product requirements, security model, UX flows, test plan and roadmap

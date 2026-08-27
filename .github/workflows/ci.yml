@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, phase-1-foundation, phase-2-financial-mvp, phase-3-member-portal, phase-4-fitness-engagement]
+    branches: [main, phase-1-foundation, phase-2-financial-mvp, phase-3-member-portal, phase-4-fitness-engagement, phase-5-production-readiness]
   pull_request:
     branches: [main]
 
@@ -22,4 +22,7 @@ jobs:
       - run: npm run test:phase2
       - run: npm run test:phase3
       - run: npm run test:phase4
+      - run: npm run test:phase5
+      - run: npm run production:prepare
+      - run: DATABASE_URL=postgresql://postgres:postgres@localhost:5432/gym npx prisma validate --schema=prisma/schema.production.prisma
       - run: npm run build
