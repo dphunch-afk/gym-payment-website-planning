@@ -8,19 +8,21 @@ datasource db {
 }
 
 model User {
-  id                   String         @id @default(cuid())
-  email                String         @unique
+  id                   String          @id @default(cuid())
+  email                String          @unique
   name                 String
   passwordHash         String
-  role                 String         @default("MEMBER")
+  role                 String          @default("MEMBER")
   sessions             Session[]
   member               MemberProfile?
-  paymentsCreated      Payment[]      @relation("PaymentCreator")
-  expensesCreated      Expense[]      @relation("ExpenseCreator")
-  announcementsCreated Announcement[] @relation("AnnouncementCreator")
-  attendanceRecorded   Attendance[]   @relation("AttendanceRecorder")
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
+  paymentsCreated      Payment[]       @relation("PaymentCreator")
+  expensesCreated      Expense[]       @relation("ExpenseCreator")
+  announcementsCreated Announcement[]  @relation("AnnouncementCreator")
+  attendanceRecorded   Attendance[]    @relation("AttendanceRecorder")
+  workoutPlansCreated  WorkoutPlan[]   @relation("WorkoutPlanCreator")
+  progressRecorded     ProgressEntry[] @relation("ProgressRecorder")
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
 }
 
 model Session {
@@ -36,23 +38,25 @@ model Session {
 }
 
 model MemberProfile {
-  id               String       @id @default(cuid())
-  userId           String       @unique
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  memberCode       String?      @unique
+  id               String          @id @default(cuid())
+  userId           String          @unique
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memberCode       String?         @unique
   phone            String?
-  membershipStatus String       @default("ACTIVE")
-  planName         String       @default("Monthly")
-  joinDate         DateTime     @default(now())
+  membershipStatus String          @default("ACTIVE")
+  planName         String          @default("Monthly")
+  joinDate         DateTime        @default(now())
   expiryDate       DateTime
   nextDueDate      DateTime
-  outstandingPaise Int          @default(0)
+  outstandingPaise Int             @default(0)
   memberships      Membership[]
   charges          Charge[]
   payments         Payment[]
   attendance       Attendance[]
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  workoutPlans     WorkoutPlan[]
+  progressEntries  ProgressEntry[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
   @@index([membershipStatus])
   @@index([phone])
@@ -161,4 +165,58 @@ model Attendance {
   @@unique([memberId, attendedAt])
   @@index([memberId, attendedAt])
   @@index([attendedAt])
+}
+
+model WorkoutPlan {
+  id          String            @id @default(cuid())
+  memberId    String
+  member      MemberProfile     @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  title       String
+  notes       String?
+  startsOn    DateTime
+  isActive    Boolean           @default(true)
+  createdById String
+  createdBy   User              @relation("WorkoutPlanCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  exercises   WorkoutExercise[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([memberId, isActive])
+  @@index([startsOn])
+}
+
+model WorkoutExercise {
+  id              String      @id @default(cuid())
+  workoutPlanId   String
+  workoutPlan     WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  dayLabel        String
+  exerciseName    String
+  sets            Int?
+  reps            String?
+  durationMinutes Int?
+  notes           String?
+  sortOrder       Int         @default(0)
+  createdAt       DateTime    @default(now())
+
+  @@index([workoutPlanId, dayLabel, sortOrder])
+}
+
+model ProgressEntry {
+  id             String        @id @default(cuid())
+  memberId       String
+  member         MemberProfile @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  recordedAt     DateTime
+  weightGrams    Int?
+  chestMm        Int?
+  waistMm        Int?
+  hipMm          Int?
+  armMm          Int?
+  thighMm        Int?
+  note           String?
+  recordedById   String
+  recordedBy     User          @relation("ProgressRecorder", fields: [recordedById], references: [id], onDelete: Restrict)
+  createdAt      DateTime      @default(now())
+
+  @@index([memberId, recordedAt])
+  @@index([recordedAt])
 }
