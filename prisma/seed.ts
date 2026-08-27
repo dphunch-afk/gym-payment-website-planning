@@ -149,7 +149,32 @@ async function main() {
     });
   }
 
-  console.log(`Seeded Phase 2 demo data for ${owner.email} and ${member.email}`);
+  const demoAnnouncement = await prisma.announcement.findFirst({ where: { title: 'Welcome to the member portal' } });
+  if (!demoAnnouncement) {
+    await prisma.announcement.create({
+      data: {
+        title: 'Welcome to the member portal',
+        body: 'Your membership, dues, payments, receipts and gym updates are now available in one place.',
+        isActive: true,
+        publishedAt: now,
+        createdById: owner.id
+      }
+    });
+  }
+
+  const demoAttendance = await prisma.attendance.findFirst({ where: { memberId: profile.id, note: 'Demo check-in' } });
+  if (!demoAttendance) {
+    await prisma.attendance.create({
+      data: {
+        memberId: profile.id,
+        attendedAt: addDays(now, -1),
+        note: 'Demo check-in',
+        recordedById: owner.id
+      }
+    });
+  }
+
+  console.log(`Seeded Phase 3 demo data for ${owner.email} and ${member.email}`);
 }
 
 main()
