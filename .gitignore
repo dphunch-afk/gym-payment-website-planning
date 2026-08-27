@@ -10,3 +10,4 @@ coverage/
 *.log
 prisma/*.db
 prisma/*.db-journal
+prisma/schema.production.prisma
